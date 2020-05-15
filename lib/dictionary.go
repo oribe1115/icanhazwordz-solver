@@ -25,6 +25,9 @@ func CreateDictionary() error {
 	dataMap := map[string][]string{}
 
 	for _, data := range dataList {
+		if data == "" {
+			continue
+		}
 		sorted := StringSort(data)
 		dataMap[sorted] = append(dataMap[sorted], data)
 	}
@@ -39,6 +42,8 @@ func CreateDictionary() error {
 
 		wordList = append(wordList, word)
 	}
+
+	sort.Sort(wordList)
 
 	fmt.Println(wordList[0])
 

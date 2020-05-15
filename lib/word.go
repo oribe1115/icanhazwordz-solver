@@ -6,4 +6,16 @@ type Word struct {
 	Examples []string
 }
 
-type WordList = []*Word
+type WordList []*Word
+
+func (wl WordList) Len() int {
+	return len(wl)
+}
+
+func (wl WordList) Swap(i, j int) {
+	wl[i], wl[j] = wl[j], wl[i]
+}
+
+func (wl WordList) Less(i, j int) bool {
+	return wl[i].Sorted < wl[j].Sorted
+}

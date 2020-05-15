@@ -12,5 +12,12 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(dictionary[10])
+	sortedTarget := lib.StringSort("Brock")
+	word := dictionary.FindEqualWord(sortedTarget, 0, len(dictionary)-1)
+	if word == nil {
+		fmt.Println("no answer")
+	} else {
+		fmt.Println("found")
+		fmt.Println(word)
+	}
 }

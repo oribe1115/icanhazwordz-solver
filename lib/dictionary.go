@@ -2,7 +2,6 @@ package lib
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -10,16 +9,40 @@ import (
 	"strings"
 )
 
-func CreateDictionary() error {
-	res, err := http.Get("https://icanhazwordz.appspot.com/dictionary.words")
+var (
+	dataURL        = "https://icanhazwordz.appspot.com/dictionary.words"
+	dictionaryFile = "dictionary.json"
+)
+
+func GetDictionary() (WordList, error) {
+	if !fileExists(dictionaryFile) {
+		return createDictionary()
+	}
+
+	data, err := ioutil.ReadFile(dictionaryFile)
 	if err != nil {
-		return err
+		return nil, err
+	}
+
+	var wordList WordList
+	err = json.Unmarshal(data, &wordList)
+	if err != nil {
+		return nil, err
+	}
+
+	return wordList, nil
+}
+
+func createDictionary() (WordList, error) {
+	res, err := http.Get(dataURL)
+	if err != nil {
+		return nil, err
 	}
 	defer res.Body.Close()
 
 	b, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	dataList := strings.Split(string(b), "\n")
@@ -49,18 +72,18 @@ func CreateDictionary() error {
 
 	j, _ := json.Marshal(wordList)
 
-	file, err := os.Create("dictionary.json")
+	file, err := os.Create(dictionaryFile)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer file.Close()
 
 	_, err = file.Write(j)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return wordList, nil
 }
 
 func StringSort(s string) string {
@@ -73,4 +96,9 @@ func StringSort(s string) string {
 	sort.Strings(list)
 
 	return strings.Join(list, "")
+}
+
+func fileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	return err == nil
 }

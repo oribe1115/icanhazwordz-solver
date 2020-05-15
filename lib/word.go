@@ -2,8 +2,8 @@ package lib
 
 // Word ソートされた単語ごとの構造体
 type Word struct {
-	Sorted   string
-	Examples []string
+	Sorted   string   `json:"sorted"`
+	Examples []string `json:"examples"`
 }
 
 type WordList []*Word

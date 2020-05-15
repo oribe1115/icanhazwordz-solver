@@ -1,9 +1,11 @@
 package lib
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"sort"
 	"strings"
 )
@@ -45,7 +47,18 @@ func CreateDictionary() error {
 
 	sort.Sort(wordList)
 
-	fmt.Println(wordList[0])
+	j, _ := json.Marshal(wordList)
+
+	file, err := os.Create("dictionary.json")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = file.Write(j)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

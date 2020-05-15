@@ -5,3 +5,5 @@ type Word struct {
 	Sorted   string
 	Examples []string
 }
+
+type WordList = []*Word

@@ -20,12 +20,27 @@ func CreateDictionary() error {
 		return err
 	}
 
-	wordList := strings.Split(string(b), "\n")
+	dataList := strings.Split(string(b), "\n")
+
+	dataMap := map[string][]string{}
+
+	for _, data := range dataList {
+		sorted := StringSort(data)
+		dataMap[sorted] = append(dataMap[sorted], data)
+	}
+
+	wordList := WordList{}
+
+	for key := range dataMap {
+		word := &Word{
+			Sorted:   key,
+			Examples: dataMap[key],
+		}
+
+		wordList = append(wordList, word)
+	}
 
 	fmt.Println(wordList[0])
-
-	po := StringSort(wordList[0])
-	fmt.Println(po)
 
 	return nil
 }

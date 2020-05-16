@@ -25,13 +25,15 @@ func AutoSolver(dictionary lib.WordList, sleepTime time.Duration, logMode bool) 
 
 	page.Navigate(pageURL)
 	logBuffer := ""
+	totalScore := 0
 
 	for i := 0; i < 10; i++ {
-		logs, err := autoSolve(dictionary, page, sleepTime)
+		logs, score, err := autoSolve(dictionary, page, sleepTime)
 		if err != nil {
 			log.Error(err)
 			return
 		}
+		totalScore += score
 		if logMode {
 			fmt.Printf("turn: %d\n%s", i+1, logs)
 		} else {
@@ -43,6 +45,8 @@ func AutoSolver(dictionary lib.WordList, sleepTime time.Duration, logMode bool) 
 		fmt.Printf(logBuffer)
 	}
 
+	fmt.Printf("totalScore: %d\n", totalScore)
+
 	fmt.Printf("quit?\n> ")
 	input := lib.ReadLine()
 	if len(input) != 0 {
@@ -50,17 +54,17 @@ func AutoSolver(dictionary lib.WordList, sleepTime time.Duration, logMode bool) 
 	}
 }
 
-func autoSolve(dictionary lib.WordList, page *agouti.Page, sleepTime time.Duration) (string, error) {
+func autoSolve(dictionary lib.WordList, page *agouti.Page, sleepTime time.Duration) (string, int, error) {
 	err := page.Refresh()
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 	time.Sleep(sleepTime * time.Second)
 
 	letterClass := page.AllByClass("letter")
 	letterElement, err := letterClass.Elements()
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	target := ""
@@ -68,10 +72,10 @@ func autoSolve(dictionary lib.WordList, page *agouti.Page, sleepTime time.Durati
 	for _, l := range letterElement {
 		t, err := l.GetText()
 		if err != nil {
-			return "", err
+			return "", 0, err
 		}
 
-		target += t
+		target += string(t[0])
 	}
 
 	answer, score := solver(dictionary, target)
@@ -83,8 +87,8 @@ func autoSolve(dictionary lib.WordList, page *agouti.Page, sleepTime time.Durati
 	submitButton := page.FindByButton("Submit")
 	err = submitButton.Click()
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
-	return fmt.Sprintf(" %s\n%s: %d\n", target, answer, score), nil
+	return fmt.Sprintf(" %s\n%s: %d\n", target, answer, score), score, nil
 }

@@ -1,5 +1,11 @@
 package lib
 
+import (
+	"strings"
+
+	"github.com/oribe1115/icanhazwordz-solver/config"
+)
+
 // Word ソートされた単語ごとの構造体
 type Word struct {
 	Sorted   string   `json:"sorted"`
@@ -32,6 +38,19 @@ func (w *Word) IsEnableConstruct(target string) bool {
 	}
 
 	return true
+}
+
+func (w *Word) CalcScore() int {
+	list := strings.Split(w.Sorted, "")
+	score := 0
+	for i := 0; i < len(w.Sorted); i++ {
+		score += config.AlphabetScore[list[i]]
+	}
+
+	score++ // bonus
+	score *= score
+
+	return score
 }
 
 func (wl WordList) FindEqualWord(target string, first int, last int) *Word {

@@ -10,12 +10,10 @@ import (
 )
 
 var (
-	pageURL   = "https://icanhazwordz.appspot.com/"
-	page      *agouti.Page
-	sleepTime time.Duration
+	pageURL = "https://icanhazwordz.appspot.com/"
 )
 
-func AutoSolver(dictionary lib.WordList, _sleepTime time.Duration) {
+func AutoSolver(dictionary lib.WordList, sleepTime time.Duration) {
 	agoutiDriver := agouti.ChromeDriver()
 	agoutiDriver.Start()
 	defer agoutiDriver.Stop()
@@ -26,11 +24,10 @@ func AutoSolver(dictionary lib.WordList, _sleepTime time.Duration) {
 	}
 
 	page.Navigate(pageURL)
-	sleepTime = _sleepTime
 
 	for i := 0; i < 10; i++ {
 		fmt.Printf("turn: %d\n", i+1)
-		err := autoSolve(dictionary)
+		err := autoSolve(dictionary, page, sleepTime)
 		if err != nil {
 			log.Error(err)
 			return
@@ -44,7 +41,7 @@ func AutoSolver(dictionary lib.WordList, _sleepTime time.Duration) {
 	}
 }
 
-func autoSolve(dictionary lib.WordList) error {
+func autoSolve(dictionary lib.WordList, page *agouti.Page, sleepTime time.Duration) error {
 	time.Sleep(sleepTime * time.Second)
 
 	letterClass := page.AllByClass("letter")

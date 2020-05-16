@@ -47,12 +47,9 @@ func (w *Word) CalcScore(firstQ, firstU int) int {
 		score += config.AlphabetScore[list[i]]
 	}
 
-	countQ, countU := w.CountQU()
-	// if countQ != 0 && countQ < countU {
-	// 	score -= config.AlphabetScore["u"]
-	// }
-
 	score++ // bonus
+
+	countQ, countU := CountQU(w.Sorted)
 	if countU > firstU+countQ {
 		score = 0
 	} else if countU > firstU {
@@ -89,20 +86,4 @@ func (wl WordList) Swap(i, j int) {
 
 func (wl WordList) Less(i, j int) bool {
 	return wl[i].Sorted < wl[j].Sorted
-}
-
-func (w *Word) CountQU() (int, int) {
-	q := 0
-	u := 0
-	for i := 0; i < len(w.Sorted); i++ {
-		if w.Sorted[i] > 'u' {
-			break
-		} else if w.Sorted[i] == 'q' {
-			q++
-		} else if w.Sorted[i] == 'u' {
-			u++
-		}
-	}
-
-	return q, u
 }

@@ -12,10 +12,6 @@ func SolverWithHand(dictionary lib.WordList) {
 
 	sortedTarget := lib.StringSort(lib.ReadLine())
 	countQ, countU := lib.CountQU(sortedTarget)
-	// isContainQ := lib.IsContainQ(sortedTarget)
-	// if isContainQ {
-	// 	sortedTarget = lib.StringSort(sortedTarget + "u")
-	// }
 	add := ""
 	for i := 0; i < countQ; i++ {
 		add += "u"
@@ -29,15 +25,6 @@ func SolverWithHand(dictionary lib.WordList) {
 		}
 	}
 
-	// if isContainQ {
-	// 	for _, word := range result {
-	// 		fmt.Printf("%s: %d -> %d\n", word.Examples[0], word.CalcScore(false), word.CalcScore(lib.IsQUCase(word.Examples[0])))
-	// 	}
-	// } else {
-	// 	for _, word := range result {
-	// 		fmt.Printf("%s: %d\n", word.Examples[0], word.CalcScore(false))
-	// 	}
-	// }
 	for _, word := range result {
 		fmt.Printf("%s: %d\n", word.Examples[0], word.CalcScore(countQ, countU))
 	}

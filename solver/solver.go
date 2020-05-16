@@ -2,6 +2,7 @@ package solver
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/oribe1115/icanhazwordz-solver/lib"
@@ -46,6 +47,53 @@ func AutoSolver(dictionary lib.WordList, sleepTime time.Duration, logMode bool) 
 	}
 
 	fmt.Printf("totalScore: %d\n", totalScore)
+
+	fmt.Printf("quit?\n> ")
+	input := lib.ReadLine()
+	if len(input) != 0 {
+		return
+	}
+}
+
+func AutoSolverToBeFirst(dictionary lib.WordList) {
+	fmt.Println("targetScore")
+	fmt.Print("> ")
+	targetScore, err := strconv.Atoi(lib.ReadLine())
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	limit := 10
+
+	agoutiDriver := agouti.ChromeDriver()
+	agoutiDriver.Start()
+	defer agoutiDriver.Stop()
+	page, err := agoutiDriver.NewPage()
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	page.Navigate(pageURL)
+
+	for i := 0; i < limit; i++ {
+		totalScore := 0
+		for j := 0; j < 10; j++ {
+			_, score, err := autoSolve(dictionary, page, 0)
+			if err != nil {
+				log.Error(err)
+				return
+			}
+			totalScore += score
+		}
+
+		fmt.Printf("%3dtimes: %4d\n", i, totalScore)
+		if totalScore > targetScore {
+			break
+		}
+
+		page.FindByLink("Start a new game").Click()
+	}
 
 	fmt.Printf("quit?\n> ")
 	input := lib.ReadLine()

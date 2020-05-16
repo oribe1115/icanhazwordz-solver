@@ -21,6 +21,7 @@ func main() {
 	fmt.Println("3: Solve with hand")
 	fmt.Println("4: Auto solve for view")
 	fmt.Println("5: Auto solve without view")
+	fmt.Println("6: Become First")
 	fmt.Printf("> ")
 
 	num := lib.ReadLine()
@@ -40,6 +41,9 @@ func main() {
 		return
 	case "5":
 		solver.AutoSolver(dictionary, 0, false)
+		return
+	case "6":
+		solver.AutoSolverToBeFirst(dictionary)
 		return
 	default:
 		fmt.Println("No such mode")

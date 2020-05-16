@@ -7,10 +7,18 @@ import (
 )
 
 func SolverWithHand(dictionary lib.WordList) {
-	fmt.Println("input word")
-	fmt.Print("> ")
+	for i := 0; i < 10; i++ {
+		fmt.Printf("turn: %d\n > ", i)
+		target := lib.ReadLine()
+		answer, score := solver(dictionary, target)
+		fmt.Printf("%s: %d\n", answer, score)
+	}
 
-	sortedTarget := lib.StringSort(lib.ReadLine())
+	fmt.Println("finish")
+}
+
+func solver(dictionary lib.WordList, target string) (string, int) {
+	sortedTarget := lib.StringSort(target)
 	countQ, countU := lib.CountQU(sortedTarget)
 	add := ""
 	for i := 0; i < countQ; i++ {
@@ -18,14 +26,22 @@ func SolverWithHand(dictionary lib.WordList) {
 	}
 	sortedTarget = lib.StringSort(sortedTarget + add)
 
-	result := lib.WordList{}
+	list := lib.WordList{}
 	for _, word := range dictionary {
 		if word.IsEnableConstruct(sortedTarget) {
-			result = append(result, word)
+			list = append(list, word)
 		}
 	}
 
-	for _, word := range result {
-		fmt.Printf("%s: %d\n", word.Examples[0], word.CalcScore(countQ, countU))
+	maxIndex := 0
+	maxScore := 0
+	for i, word := range list {
+		score := word.CalcScore(countQ, countU)
+		if score > maxScore {
+			maxScore = score
+			maxIndex = i
+		}
 	}
+
+	return list[maxIndex].Examples[0], maxScore
 }

@@ -9,11 +9,11 @@ type Word struct {
 type WordList []*Word
 
 func (wl WordList) FindEqualWord(target string, first int, last int) *Word {
-	if first == last {
+	tmp := (first + last) / 2
+	if tmp == first || tmp == last {
 		return nil
 	}
 
-	tmp := (first + last) / 2
 	if target == wl[tmp].Sorted {
 		return wl[tmp]
 	} else if target < wl[tmp].Sorted {

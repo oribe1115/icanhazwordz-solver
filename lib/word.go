@@ -8,6 +8,28 @@ type Word struct {
 
 type WordList []*Word
 
+func (w *Word) IsEnableConstruct(target string) bool {
+	if len(target) < len(w.Sorted) {
+		return false
+	}
+
+	i := 0
+	j := 0
+
+	for i < len(target) && j < len(w.Sorted) {
+		if target[i] == w.Sorted[j] {
+			i++
+			j++
+		} else if target[i] < w.Sorted[j] {
+			i++
+		} else {
+			return false
+		}
+	}
+
+	return true
+}
+
 func (wl WordList) FindEqualWord(target string, first int, last int) *Word {
 	tmp := (first + last) / 2
 	if tmp == first || tmp == last {

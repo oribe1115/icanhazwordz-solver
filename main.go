@@ -19,6 +19,7 @@ func main() {
 	fmt.Println("1: Find perfect match anagrams")
 	fmt.Println("2: Find words constructed with input")
 	fmt.Println("3: solve with hand")
+	fmt.Println("4: auto")
 	fmt.Printf("> ")
 
 	num := lib.ReadLine()
@@ -32,6 +33,9 @@ func main() {
 		return
 	case "3":
 		solver.SolverWithHand(dictionary)
+		return
+	case "4":
+		solver.AutoSolver()
 		return
 	default:
 		fmt.Println("No such mode")

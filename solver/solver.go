@@ -13,7 +13,7 @@ var (
 	pageURL = "https://icanhazwordz.appspot.com/"
 )
 
-func AutoSolver(sleepTime time.Duration) {
+func AutoSolver(dictionary lib.WordList, sleepTime time.Duration) {
 	agoutiDriver := agouti.ChromeDriver()
 	agoutiDriver.Start()
 	defer agoutiDriver.Stop()
@@ -42,6 +42,20 @@ func AutoSolver(sleepTime time.Duration) {
 	}
 
 	fmt.Println(target)
+
+	answer, score := solver(dictionary, target)
+	fmt.Printf("%s: %d\n", answer, score)
+
+	inputField := page.FindByID("MoveField")
+	inputField.Fill(answer)
+	time.Sleep(sleepTime * time.Second)
+
+	submitButton := page.FindByButton("Submit")
+	err = submitButton.Click()
+	if err != nil {
+		log.Error(err)
+		return
+	}
 
 	fmt.Printf("quit?\n> ")
 	input := lib.ReadLine()

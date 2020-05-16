@@ -35,7 +35,7 @@ func main() {
 		solver.SolverWithHand(dictionary)
 		return
 	case "4":
-		solver.AutoSolver()
+		solver.AutoSolver(3)
 		return
 	default:
 		fmt.Println("No such mode")

@@ -6,6 +6,7 @@ import (
 
 	"github.com/oribe1115/icanhazwordz-solver/lib"
 	"github.com/sclevine/agouti"
+	"github.com/siddontang/go/log"
 )
 
 var (
@@ -21,7 +22,26 @@ func AutoSolver(sleepTime time.Duration) {
 	page.Navigate(pageURL)
 	time.Sleep(sleepTime * time.Second)
 
-	// page.FindByLink("Help").Click()
+	letterClass := page.AllByClass("letter")
+	letterElement, err := letterClass.Elements()
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	target := ""
+
+	for _, l := range letterElement {
+		t, err := l.GetText()
+		if err != nil {
+			log.Error(err)
+			return
+		}
+
+		target += t
+	}
+
+	fmt.Println(target)
 
 	fmt.Printf("quit?\n> ")
 	input := lib.ReadLine()

@@ -27,6 +27,10 @@ func (w *Word) IsEnableConstruct(target string) bool {
 		}
 	}
 
+	if i == len(target) && j != len(w.Sorted) {
+		return false
+	}
+
 	return true
 }
 

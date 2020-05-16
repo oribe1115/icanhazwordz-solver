@@ -22,10 +22,17 @@ func FindEqualWords(dictionary lib.WordList) {
 }
 
 func FindContainAnagramWords(dictionary lib.WordList) {
-	sortedTarget := lib.StringSort(lib.ReadLine())
-	word := dictionary[0]
-	fmt.Println(word)
+	fmt.Println("input word")
+	fmt.Print("> ")
 
-	result := word.IsEnableConstruct(sortedTarget)
-	fmt.Println(result)
+	sortedTarget := lib.StringSort(lib.ReadLine())
+
+	result := make([]string, 0)
+	for _, word := range dictionary {
+		if word.IsEnableConstruct(sortedTarget) {
+			result = append(result, word.Examples...)
+		}
+	}
+
+	fmt.Println(strings.Join(result, " "))
 }

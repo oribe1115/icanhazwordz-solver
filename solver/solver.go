@@ -24,6 +24,7 @@ func AutoSolver(dictionary lib.WordList, sleepTime time.Duration, logMode bool) 
 	}
 
 	page.Navigate(pageURL)
+	logBuffer := ""
 
 	for i := 0; i < 10; i++ {
 		logs, err := autoSolve(dictionary, page, sleepTime)
@@ -33,7 +34,13 @@ func AutoSolver(dictionary lib.WordList, sleepTime time.Duration, logMode bool) 
 		}
 		if logMode {
 			fmt.Printf("turn: %d\n%s", i+1, logs)
+		} else {
+			logBuffer += fmt.Sprintf("turn: %d\n%s", i+1, logs)
 		}
+	}
+
+	if !logMode {
+		fmt.Printf(logBuffer)
 	}
 
 	fmt.Printf("quit?\n> ")

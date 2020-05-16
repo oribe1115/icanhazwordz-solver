@@ -12,7 +12,9 @@ func main() {
 		panic(err)
 	}
 
-	sortedTarget := lib.StringSort("Brock")
+	lib.InitStdin()
+
+	sortedTarget := lib.StringSort(lib.ReadLine())
 	word := dictionary.FindEqualWord(sortedTarget, 0, len(dictionary)-1)
 	if word == nil {
 		fmt.Println("no answer")

@@ -18,6 +18,7 @@ func main() {
 	fmt.Println("Choose mode with number")
 	fmt.Println("1: Find perfect match anagrams")
 	fmt.Println("2: Find words constructed with input")
+	fmt.Println("3: solve with hand")
 	fmt.Printf("> ")
 
 	num := lib.ReadLine()
@@ -28,6 +29,9 @@ func main() {
 		return
 	case "2":
 		solver.FindContainAnagramWords(dictionary)
+		return
+	case "3":
+		solver.SolverWithHand(dictionary)
 		return
 	default:
 		fmt.Println("No such mode")

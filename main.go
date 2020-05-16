@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/oribe1115/icanhazwordz-solver/lib"
+	"github.com/oribe1115/icanhazwordz-solver/solver"
 )
 
 func main() {
@@ -14,12 +15,18 @@ func main() {
 
 	lib.InitStdin()
 
-	sortedTarget := lib.StringSort(lib.ReadLine())
-	word := dictionary.FindEqualWord(sortedTarget, 0, len(dictionary)-1)
-	if word == nil {
-		fmt.Println("no answer")
-	} else {
-		fmt.Println("found")
-		fmt.Println(word)
+	fmt.Println("Choose mode with number")
+	fmt.Println("1: Find perfect match anagrams")
+	fmt.Printf("> ")
+
+	num := lib.ReadLine()
+
+	switch num {
+	case "1":
+		solver.FindEqualWords(dictionary)
+		return
+	default:
+		fmt.Println("No such mode")
 	}
+
 }

@@ -63,7 +63,14 @@ func AutoSolverToBeFirst(dictionary lib.WordList) {
 		log.Error(err)
 		return
 	}
-	limit := 10
+
+	fmt.Println("limit")
+	fmt.Print("> ")
+	limit, err := strconv.Atoi(lib.ReadLine())
+	if err != nil {
+		log.Error(err)
+		return
+	}
 
 	agoutiDriver := agouti.ChromeDriver()
 	agoutiDriver.Start()
@@ -77,19 +84,28 @@ func AutoSolverToBeFirst(dictionary lib.WordList) {
 	page.Navigate(pageURL)
 
 	for i := 0; i < limit; i++ {
-		totalScore := 0
 		for j := 0; j < 10; j++ {
-			_, score, err := autoSolve(dictionary, page, 0)
+			_, _, err := autoSolve(dictionary, page, 0)
 			if err != nil {
 				log.Error(err)
 				return
 			}
-			totalScore += score
 		}
 
-		fmt.Printf("%3dtimes: %4d\n", i, totalScore)
-		if totalScore > targetScore {
-			break
+		printedScore := page.FindByXPath("/html/body/table[1]/tbody/tr/td[2]/table/tbody/tr[1]/td[2]")
+		got, err := printedScore.Text()
+		if err != nil {
+			log.Error(err)
+		}
+
+		score, err := strconv.Atoi(got)
+		if err != nil {
+			log.Error(err)
+		} else {
+			fmt.Printf("%3d times: %4d\n", i, score)
+			if score > targetScore {
+				break
+			}
 		}
 
 		page.FindByLink("Start a new game").Click()

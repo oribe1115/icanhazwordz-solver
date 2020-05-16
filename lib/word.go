@@ -40,11 +40,15 @@ func (w *Word) IsEnableConstruct(target string) bool {
 	return true
 }
 
-func (w *Word) CalcScore() int {
+func (w *Word) CalcScore(isDeductCase bool) int {
 	list := strings.Split(w.Sorted, "")
 	score := 0
 	for i := 0; i < len(w.Sorted); i++ {
 		score += config.AlphabetScore[list[i]]
+	}
+
+	if isDeductCase {
+		score -= config.AlphabetScore["u"]
 	}
 
 	score++ // bonus

@@ -2,7 +2,6 @@ package solver
 
 import (
 	"github.com/oribe1115/icanhazwordz-solver/lib"
-	"github.com/siddontang/go/log"
 )
 
 func solver(dictionary lib.WordList, target string) (string, int) {
@@ -21,6 +20,10 @@ func solver(dictionary lib.WordList, target string) (string, int) {
 		}
 	}
 
+	if len(list) == 0 {
+		return "", 0
+	}
+
 	maxIndex := 0
 	maxScore := 0
 	for i, word := range list {
@@ -29,14 +32,6 @@ func solver(dictionary lib.WordList, target string) (string, int) {
 			maxScore = score
 			maxIndex = i
 		}
-	}
-
-	log.Errorf("maxIndex: %d", maxIndex)
-	if list[maxIndex] == nil {
-		log.Errorf("nil index at taraget: %s", target)
-	}
-	if len(list[maxIndex].Examples) == 0 {
-		log.Errorf("no example at %d", maxIndex)
 	}
 
 	return list[maxIndex].Examples[0], maxScore

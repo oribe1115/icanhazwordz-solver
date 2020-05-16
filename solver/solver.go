@@ -42,6 +42,10 @@ func AutoSolver(dictionary lib.WordList, sleepTime time.Duration) {
 }
 
 func autoSolve(dictionary lib.WordList, page *agouti.Page, sleepTime time.Duration) error {
+	err := page.Refresh()
+	if err != nil {
+		return err
+	}
 	time.Sleep(sleepTime * time.Second)
 
 	letterClass := page.AllByClass("letter")

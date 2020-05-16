@@ -143,6 +143,15 @@ func autoSolve(dictionary lib.WordList, page *agouti.Page, sleepTime time.Durati
 	}
 
 	answer, score := solver(dictionary, target)
+	if score == 0 {
+		passButton := page.FindByButton("PASS")
+		err = passButton.Click()
+		if err != nil {
+			return "", 0, err
+		}
+
+		return fmt.Sprintf(" %s\n%s: PASS\n", target, answer), score, nil
+	}
 
 	inputField := page.FindByID("MoveField")
 	inputField.Fill(answer)

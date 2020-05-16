@@ -1,21 +1,9 @@
 package solver
 
 import (
-	"fmt"
-
 	"github.com/oribe1115/icanhazwordz-solver/lib"
+	"github.com/siddontang/go/log"
 )
-
-func SolverWithHand(dictionary lib.WordList) {
-	for i := 0; i < 10; i++ {
-		fmt.Printf("turn: %d\n > ", i+1)
-		target := lib.ReadLine()
-		answer, score := solver(dictionary, target)
-		fmt.Printf("%s: %d\n", answer, score)
-	}
-
-	fmt.Println("finish")
-}
 
 func solver(dictionary lib.WordList, target string) (string, int) {
 	sortedTarget := lib.StringSort(target)
@@ -41,6 +29,14 @@ func solver(dictionary lib.WordList, target string) (string, int) {
 			maxScore = score
 			maxIndex = i
 		}
+	}
+
+	log.Errorf("maxIndex: %d", maxIndex)
+	if list[maxIndex] == nil {
+		log.Errorf("nil index at taraget: %s", target)
+	}
+	if len(list[maxIndex].Examples) == 0 {
+		log.Errorf("no example at %d", maxIndex)
 	}
 
 	return list[maxIndex].Examples[0], maxScore

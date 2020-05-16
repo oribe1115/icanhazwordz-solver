@@ -87,11 +87,7 @@ func createDictionary() (WordList, error) {
 }
 
 func StringSort(s string) string {
-	list := strings.Split(s, "")
-
-	for i := range list {
-		list[i] = strings.ToLower(list[i])
-	}
+	list := strings.Split(strings.ToLower(s), "")
 
 	sort.Strings(list)
 

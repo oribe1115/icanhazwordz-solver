@@ -20,3 +20,19 @@ func FindEqualWords(dictionary lib.WordList) {
 
 	fmt.Println(strings.Join(word.Examples, " "))
 }
+
+func FindContainAnagramWords(dictionary lib.WordList) {
+	fmt.Println("input word")
+	fmt.Print("> ")
+
+	sortedTarget := lib.StringSort(lib.ReadLine())
+
+	result := make([]string, 0)
+	for _, word := range dictionary {
+		if word.IsEnableConstruct(sortedTarget) {
+			result = append(result, word.Examples...)
+		}
+	}
+
+	fmt.Println(strings.Join(result, " "))
+}

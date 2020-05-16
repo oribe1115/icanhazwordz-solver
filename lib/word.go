@@ -40,18 +40,25 @@ func (w *Word) IsEnableConstruct(target string) bool {
 	return true
 }
 
-func (w *Word) CalcScore(isDeductCase bool) int {
+func (w *Word) CalcScore(firstQ, firstU int) int {
 	list := strings.Split(w.Sorted, "")
 	score := 0
 	for i := 0; i < len(w.Sorted); i++ {
 		score += config.AlphabetScore[list[i]]
 	}
 
-	if isDeductCase {
-		score -= config.AlphabetScore["u"]
-	}
+	countQ, countU := w.CountQU()
+	// if countQ != 0 && countQ < countU {
+	// 	score -= config.AlphabetScore["u"]
+	// }
 
 	score++ // bonus
+	if countU > firstU+countQ {
+		score = 0
+	} else if countU > firstU {
+		score -= config.AlphabetScore["u"] * (countU - firstU)
+	}
+
 	score *= score
 
 	return score
@@ -82,4 +89,20 @@ func (wl WordList) Swap(i, j int) {
 
 func (wl WordList) Less(i, j int) bool {
 	return wl[i].Sorted < wl[j].Sorted
+}
+
+func (w *Word) CountQU() (int, int) {
+	q := 0
+	u := 0
+	for i := 0; i < len(w.Sorted); i++ {
+		if w.Sorted[i] > 'u' {
+			break
+		} else if w.Sorted[i] == 'q' {
+			q++
+		} else if w.Sorted[i] == 'u' {
+			u++
+		}
+	}
+
+	return q, u
 }

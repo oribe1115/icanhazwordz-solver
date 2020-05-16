@@ -72,13 +72,7 @@ func createDictionary() (WordList, error) {
 
 	j, _ := json.Marshal(wordList)
 
-	file, err := os.Create(dictionaryFile)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	_, err = file.Write(j)
+	err = ioutil.WriteFile(dictionaryFile, ([]byte)(j), os.ModePerm)
 	if err != nil {
 		return nil, err
 	}

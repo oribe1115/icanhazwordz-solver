@@ -10,23 +10,47 @@ import (
 )
 
 var (
-	pageURL = "https://icanhazwordz.appspot.com/"
+	pageURL   = "https://icanhazwordz.appspot.com/"
+	page      *agouti.Page
+	sleepTime time.Duration
 )
 
-func AutoSolver(dictionary lib.WordList, sleepTime time.Duration) {
+func AutoSolver(dictionary lib.WordList, _sleepTime time.Duration) {
 	agoutiDriver := agouti.ChromeDriver()
 	agoutiDriver.Start()
 	defer agoutiDriver.Stop()
-	page, _ := agoutiDriver.NewPage()
+	page, err := agoutiDriver.NewPage()
+	if err != nil {
+		log.Error(err)
+		return
+	}
 
 	page.Navigate(pageURL)
+	sleepTime = _sleepTime
+
+	for i := 0; i < 10; i++ {
+		fmt.Printf("turn: %d\n", i+1)
+		err := autoSolve(dictionary)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+	}
+
+	fmt.Printf("quit?\n> ")
+	input := lib.ReadLine()
+	if len(input) != 0 {
+		return
+	}
+}
+
+func autoSolve(dictionary lib.WordList) error {
 	time.Sleep(sleepTime * time.Second)
 
 	letterClass := page.AllByClass("letter")
 	letterElement, err := letterClass.Elements()
 	if err != nil {
-		log.Error(err)
-		return
+		return err
 	}
 
 	target := ""
@@ -34,14 +58,13 @@ func AutoSolver(dictionary lib.WordList, sleepTime time.Duration) {
 	for _, l := range letterElement {
 		t, err := l.GetText()
 		if err != nil {
-			log.Error(err)
-			return
+			return err
 		}
 
 		target += t
 	}
 
-	fmt.Println(target)
+	fmt.Printf(" %s\n", target)
 
 	answer, score := solver(dictionary, target)
 	fmt.Printf("%s: %d\n", answer, score)
@@ -53,13 +76,8 @@ func AutoSolver(dictionary lib.WordList, sleepTime time.Duration) {
 	submitButton := page.FindByButton("Submit")
 	err = submitButton.Click()
 	if err != nil {
-		log.Error(err)
-		return
+		return err
 	}
 
-	fmt.Printf("quit?\n> ")
-	input := lib.ReadLine()
-	if len(input) != 0 {
-		return
-	}
+	return nil
 }

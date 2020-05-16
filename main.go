@@ -36,10 +36,10 @@ func main() {
 		solver.SolverWithHand(dictionary)
 		return
 	case "4":
-		solver.AutoSolver(dictionary, 3)
+		solver.AutoSolver(dictionary, 3, true)
 		return
 	case "5":
-		solver.AutoSolver(dictionary, 0)
+		solver.AutoSolver(dictionary, 0, false)
 		return
 	default:
 		fmt.Println("No such mode")

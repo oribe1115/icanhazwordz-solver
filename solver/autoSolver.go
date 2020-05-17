@@ -2,6 +2,7 @@ package solver
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -11,7 +12,8 @@ import (
 )
 
 var (
-	pageURL = "https://icanhazwordz.appspot.com/"
+	pageURL   = "https://icanhazwordz.appspot.com/"
+	NICK_NAME = ""
 )
 
 func AutoSolver(dictionary lib.WordList, sleepTime time.Duration, logMode bool) {
@@ -56,6 +58,8 @@ func AutoSolver(dictionary lib.WordList, sleepTime time.Duration, logMode bool) 
 }
 
 func AutoSolverToBeFirst(dictionary lib.WordList) {
+	NICK_NAME = os.Getenv("NICK_NAME")
+
 	fmt.Println("targetScore")
 	fmt.Print("> ")
 	targetScore, err := strconv.Atoi(lib.ReadLine())
@@ -84,12 +88,19 @@ func AutoSolverToBeFirst(dictionary lib.WordList) {
 	page.Navigate(pageURL)
 
 	for i := 0; i < limit; i++ {
+		errorFlag := false
 		for j := 0; j < 10; j++ {
 			_, _, err := autoSolve(dictionary, page, 0)
 			if err != nil {
 				log.Error(err)
+				errorFlag = true
 				return
 			}
+		}
+
+		if errorFlag {
+			page.FindByLink("Start a new game").Click()
+			continue
 		}
 
 		printedScore := page.FindByXPath("/html/body/table[1]/tbody/tr/td[2]/table/tbody/tr[1]/td[2]")
@@ -104,6 +115,11 @@ func AutoSolverToBeFirst(dictionary lib.WordList) {
 		} else {
 			fmt.Printf("%3d times: %4d\n", i, score)
 			if score > targetScore {
+				err = submitHighScore(page)
+				if err != nil {
+					log.Error(err)
+				}
+				fmt.Println("submit as high score")
 				break
 			}
 		}
@@ -111,11 +127,7 @@ func AutoSolverToBeFirst(dictionary lib.WordList) {
 		page.FindByLink("Start a new game").Click()
 	}
 
-	fmt.Printf("quit?\n> ")
-	input := lib.ReadLine()
-	if len(input) != 0 {
-		return
-	}
+	fmt.Println("end")
 }
 
 func autoSolve(dictionary lib.WordList, page *agouti.Page, sleepTime time.Duration) (string, int, error) {
@@ -164,4 +176,32 @@ func autoSolve(dictionary lib.WordList, page *agouti.Page, sleepTime time.Durati
 	}
 
 	return fmt.Sprintf(" %s\n%s: %d\n", target, answer, score), score, nil
+}
+
+func submitHighScore(page *agouti.Page) error {
+	nameHolder := page.FindByName("NickName")
+	err := nameHolder.Fill(NICK_NAME)
+	if err != nil {
+		return err
+	}
+
+	urlHolder := page.FindByName("URL")
+	err = urlHolder.Fill("https://github.com/oribe1115/icanhazwordz-solver")
+	if err != nil {
+		return err
+	}
+
+	checkRobot := page.FindByID("AgentRobot")
+	err = checkRobot.Click()
+	if err != nil {
+		return err
+	}
+
+	recordButton := page.FindByButton("Record!")
+	err = recordButton.Click()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -3,11 +3,15 @@ package main
 import (
 	"fmt"
 
+	"github.com/joho/godotenv"
 	"github.com/oribe1115/icanhazwordz-solver/lib"
 	"github.com/oribe1115/icanhazwordz-solver/solver"
 )
 
 func main() {
+	godotenv.Load()
+
+	fmt.Println("Load dictionary...")
 	dictionary, err := lib.GetDictionary()
 	if err != nil {
 		panic(err)

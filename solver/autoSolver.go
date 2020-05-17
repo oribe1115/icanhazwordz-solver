@@ -2,6 +2,7 @@ package solver
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -11,7 +12,8 @@ import (
 )
 
 var (
-	pageURL = "https://icanhazwordz.appspot.com/"
+	pageURL   = "https://icanhazwordz.appspot.com/"
+	NICK_NAME = ""
 )
 
 func AutoSolver(dictionary lib.WordList, sleepTime time.Duration, logMode bool) {
@@ -56,6 +58,8 @@ func AutoSolver(dictionary lib.WordList, sleepTime time.Duration, logMode bool) 
 }
 
 func AutoSolverToBeFirst(dictionary lib.WordList) {
+	NICK_NAME = os.Getenv("NICK_NAME")
+
 	fmt.Println("targetScore")
 	fmt.Print("> ")
 	targetScore, err := strconv.Atoi(lib.ReadLine())
@@ -176,7 +180,7 @@ func autoSolve(dictionary lib.WordList, page *agouti.Page, sleepTime time.Durati
 
 func submitHighScore(page *agouti.Page) error {
 	nameHolder := page.FindByName("NickName")
-	err := nameHolder.Fill("")
+	err := nameHolder.Fill(NICK_NAME)
 	if err != nil {
 		return err
 	}

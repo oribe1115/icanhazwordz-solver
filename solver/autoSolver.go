@@ -94,7 +94,6 @@ func AutoSolverToBeFirst(dictionary lib.WordList) {
 			if err != nil {
 				log.Error(err)
 				errorFlag = true
-				return
 			}
 		}
 
